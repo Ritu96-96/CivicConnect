@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Admin Dashboard</title>
+  <style>
+    table { border-collapse: collapse; width: 100%; margin-top: 20px; }
+    th, td { border: 1px solid #ddd; padding: 8px; text-align: center; }
+    th { background-color: #f4f4f4; }
+    img { max-width: 100px; border-radius: 6px; }
+  </style>
+</head>
+<body>
+  <h2>Admin Dashboard - Reports</h2>
+  <table id="reportsTable">
+    <tr>
+      <th>ID</th>
+      <th>Photo</th>
+      <th>Description</th>
+      <th>Category</th>
+      <th>Location</th>
+      <th>Status</th>
+      <th>Reported At</th>
+    </tr>
+  </table>
+
+  <script>
+    async function loadReports() {
+      try {
+        const response = await fetch("/api/reports");
+        if (!response.ok) throw new Error("Failed to fetch reports");
+
+        const data = await response.json();
+        const table = document.getElementById("reportsTable");
+
+        data.forEach(r => {
+          const row = `
+            <tr>
+              <td>${r.id}</td>
+              <td><img src="${r.photo}" alt="Photo"></td>
+              <td>${r.description}</td>
+              <td>${r.category}</td>
+              <td>${r.location}</td>
+              <td>${r.status}</td>
+              <td>${r.reportedAt}</td>
+            </tr>
+          `;
+          table.innerHTML += row;
+        });
+      } catch (err) {
+        document.getElementById("reportsTable").innerHTML =
+          "<tr><td colspan='7'>❌ Error loading reports</td></tr>";
+        console.error("Fetch error:", err);
+      }
+    }
+
+    window.onload = loadReports;
+  </script>
+</body>
+</html>
+
